@@ -1,0 +1,77 @@
+const quizData = [
+    {
+        question: "What is the capital of France?",
+        options: ["Paris", "Berlin", "Madrid", "Rome"],
+        correctAnswer: "Paris"
+    },
+    {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Venus", "Jupiter"],
+        correctAnswer: "Mars"
+    },
+    {
+        question: "What is the largest mammal?",
+        options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+        correctAnswer: "Blue Whale"
+    }
+];
+
+const questionContainer = document.getElementById("question-container");
+const optionsContainer = document.getElementById("options-container");
+const resultContainer = document.getElementById("result-container");
+const nextButton = document.getElementById("next-button");
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion() {
+    const currentQuizData = quizData[currentQuestion];
+
+    questionContainer.innerText = currentQuizData.question;
+    optionsContainer.innerHTML = "";
+
+    currentQuizData.options.forEach(option => {
+        const button = document.createElement("button");
+        button.innerText = option;
+        button.classList.add("option-button");
+        button.addEventListener("click", checkAnswer);
+        optionsContainer.appendChild(button);
+    });
+}
+
+function checkAnswer(event) {
+    const selectedOption = event.target.innerText;
+    const correctAnswer = quizData[currentQuestion].correctAnswer;
+
+    if (selectedOption === correctAnswer) {
+        score++;
+    }
+
+    optionsContainer.classList.add("disabled");
+    resultContainer.innerText = `Your current score: ${score}`;
+    nextButton.style.display = "block";
+}
+
+function nextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion < quizData.length) {
+        loadQuestion();
+        optionsContainer.classList.remove("disabled");
+        resultContainer.innerText = "";
+        nextButton.style.display = "none";
+    } else {
+        showFinalResult();
+    }
+}
+
+function showFinalResult() {
+    questionContainer.innerText = "Quiz completed!";
+    optionsContainer.innerHTML = "";
+    resultContainer.innerText = `Your final score: ${score} out of ${quizData.length}`;
+    nextButton.style.display = "none";
+}
+
+loadQuestion();
+
+nextButton.addEventListener("click", nextQuestion);
